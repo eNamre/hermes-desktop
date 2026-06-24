@@ -1,5 +1,5 @@
-appId: com.nousresearch.hermes
-productName: Hermes One
+appId: tools.razum.hermes-desktop
+productName: РАЗУМ Ассистент
 directories:
   buildResources: build
 files:
@@ -69,5 +69,5 @@ rpm:
 npmRebuild: false
 publish:
   provider: github
-  owner: fathah
+  owner: eNamre
   repo: hermes-desktop
