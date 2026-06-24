@@ -34,6 +34,7 @@ type TransportProbe = {
 
 const LANGUAGE_NATIVE_NAMES: Record<AppLocale, string> = {
   en: "English",
+  ru: "Русский",
   es: "Español",
   he: "עברית",
   id: "Bahasa Indonesia",
