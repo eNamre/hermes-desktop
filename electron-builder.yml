@@ -15,6 +15,9 @@ asarUnpack:
   - node_modules/better-sqlite3/build/Release/*.node
 win:
   executableName: hermes-agent
+  extraResources:
+    - from: resources/bin/win
+      to: bin
   target:
     - nsis
     - portable
