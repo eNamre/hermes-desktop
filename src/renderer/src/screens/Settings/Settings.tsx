@@ -720,6 +720,7 @@ function Settings({ profile }: { profile?: string }): React.JSX.Element {
         </div>
         <div className="settings-hermes-info">
           <div className="settings-hermes-row">
+{connMode !== "remote" && (
             <div className="settings-hermes-detail">
               <span className="settings-hermes-label">
                 {t("common.engine")}
@@ -734,6 +735,8 @@ function Settings({ profile }: { profile?: string }): React.JSX.Element {
                 </span>
               )}
             </div>
+            )}
+{connMode !== "remote" && (
             <div className="settings-hermes-detail">
               <span className="settings-hermes-label">
                 {t("common.released")}
@@ -746,6 +749,7 @@ function Settings({ profile }: { profile?: string }): React.JSX.Element {
                 </span>
               )}
             </div>
+            )}
             <div className="settings-hermes-detail">
               <span className="settings-hermes-label">
                 {t("common.desktop")}
@@ -758,6 +762,7 @@ function Settings({ profile }: { profile?: string }): React.JSX.Element {
                 </span>
               )}
             </div>
+{connMode !== "remote" && (
             <div className="settings-hermes-detail">
               <span className="settings-hermes-label">Python</span>
               {hermesVersion === null ? (
@@ -768,6 +773,8 @@ function Settings({ profile }: { profile?: string }): React.JSX.Element {
                 </span>
               )}
             </div>
+            )}
+{connMode !== "remote" && (
             <div className="settings-hermes-detail">
               <span className="settings-hermes-label">OpenAI SDK</span>
               {hermesVersion === null ? (
@@ -778,6 +785,8 @@ function Settings({ profile }: { profile?: string }): React.JSX.Element {
                 </span>
               )}
             </div>
+            )}
+{connMode !== "remote" && (
             <div className="settings-hermes-detail">
               <span className="settings-hermes-label">{t("common.home")}</span>
               {!hermesHome ? (
@@ -788,7 +797,9 @@ function Settings({ profile }: { profile?: string }): React.JSX.Element {
                 </span>
               )}
             </div>
+            )}
           </div>
+{connMode !== "remote" && (
           {parsedVersion?.updateInfo && (
             <div className="settings-hermes-update-badge">
               {parsedVersion.updateInfo}
@@ -831,6 +842,7 @@ function Settings({ profile }: { profile?: string }): React.JSX.Element {
               {dumpRunning ? t("settings.running") : t("settings.debugDump")}
             </button>
           </div>
+          )}
           <div className="settings-field" style={{ marginTop: 12 }}>
             <label className="settings-field-label">
               {t("settings.autoUpgradeDesktop")}
@@ -857,6 +869,8 @@ function Settings({ profile }: { profile?: string }): React.JSX.Element {
               {t("settings.autoUpgradeDesktopHint")}
             </div>
           </div>
+{connMode !== "remote" && (
+            <>
           {updateResult && (
             <div
               className={`settings-hermes-result ${updateResultType || "error"}`}
@@ -869,6 +883,8 @@ function Settings({ profile }: { profile?: string }): React.JSX.Element {
           )}
           {dumpOutput && (
             <pre className="settings-hermes-doctor">{dumpOutput}</pre>
+          )}
+            </>
           )}
         </div>
       </div>
@@ -911,6 +927,7 @@ function Settings({ profile }: { profile?: string }): React.JSX.Element {
             {t("settings.connectionMode")}
           </label>
           <div className="settings-theme-options">
+{connMode !== "remote" && (
             <button
               className={`settings-theme-option ${connMode === "local" ? "active" : ""}`}
               onClick={() => {
@@ -920,18 +937,21 @@ function Settings({ profile }: { profile?: string }): React.JSX.Element {
             >
               {t("settings.modeLocal")}
             </button>
+            )}
             <button
               className={`settings-theme-option ${connMode === "remote" ? "active" : ""}`}
               onClick={() => void handleSwitchToRemote()}
             >
               {t("settings.modeRemote")}
             </button>
+{connMode !== "remote" && (
             <button
               className={`settings-theme-option ${connMode === "ssh" ? "active" : ""}`}
               onClick={() => void handleSwitchToSsh()}
             >
               {t("settings.modeSsh")}
             </button>
+            )}
           </div>
           <div className="settings-field-hint">
             {connMode === "local"
@@ -1201,7 +1221,7 @@ function Settings({ profile }: { profile?: string }): React.JSX.Element {
         )}
       </div>
 
-      {openclawFound && !migrationDismissed && (
+      {connMode !== "remote" && openclawFound && !migrationDismissed && (
         <div className="settings-migration-banner">
           <div className="settings-migration-header">
             <div>
@@ -1347,6 +1367,21 @@ function Settings({ profile }: { profile?: string }): React.JSX.Element {
           <LanguageSelect locale={locale} onSelect={setLocale} />
           <div className="settings-field-hint">
             {t("settings.language.hint")}
+          </div>
+        </div>
+      </div>
+
+      <div className="settings-section">
+        <div className="settings-section-title">
+          {t("settings.hotkey.section")}
+        </div>
+        <div className="settings-field">
+          <label className="settings-field-label">
+            {t("settings.hotkey.quickCallLabel")}
+          </label>
+          <div className="settings-hermes-value">Ctrl + Shift + Space</div>
+          <div className="settings-field-hint">
+            {t("settings.hotkey.quickCallHint")}
           </div>
         </div>
       </div>
