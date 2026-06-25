@@ -37,6 +37,24 @@ import navigationRu from "./locales/ru/navigation";
 import welcomeRu from "./locales/ru/welcome";
 import setupRu from "./locales/ru/setup";
 import settingsRu from "./locales/ru/settings";
+import chatRu from "./locales/ru/chat";
+import errorsRu from "./locales/ru/errors";
+import sessionsRu from "./locales/ru/sessions";
+import kanbanRu from "./locales/ru/kanban";
+import skillsRu from "./locales/ru/skills";
+import schedulesRu from "./locales/ru/schedules";
+import toolsRu from "./locales/ru/tools";
+import modelsRu from "./locales/ru/models";
+import constantsRu from "./locales/ru/constants";
+import discoverRu from "./locales/ru/discover";
+import providersRu from "./locales/ru/providers";
+import gatewayRu from "./locales/ru/gateway";
+import memoryRu from "./locales/ru/memory";
+import officeRu from "./locales/ru/office";
+import soulRu from "./locales/ru/soul";
+import agentsRu from "./locales/ru/agents";
+import installRu from "./locales/ru/install";
+import diagnoseRu from "./locales/ru/diagnose";
 import commonHe from "./locales/he/common";
 import navigationHe from "./locales/he/navigation";
 import discoverHe from "./locales/he/discover";
@@ -259,6 +277,24 @@ export const resources = {
       welcome: welcomeRu,
       setup: setupRu,
       settings: settingsRu,
+      chat: chatRu,
+      errors: errorsRu,
+      sessions: sessionsRu,
+      kanban: kanbanRu,
+      skills: skillsRu,
+      schedules: schedulesRu,
+      tools: toolsRu,
+      models: modelsRu,
+      constants: constantsRu,
+      discover: discoverRu,
+      providers: providersRu,
+      gateway: gatewayRu,
+      memory: memoryRu,
+      office: officeRu,
+      soul: soulRu,
+      agents: agentsRu,
+      install: installRu,
+      diagnose: diagnoseRu,
     },
   },
   en: {
