@@ -31,7 +31,15 @@ export default {
     chinese: "中文",
     portuguese: "Portuguese",
     turkish: "Türkçe",
+    russian: "Русский",
     hint: "Choose the interface language",
+  },
+  hotkey: {
+    section: "Hotkeys",
+    quickCallLabel: "Quick-call window",
+    quickCallHint:
+      "Global shortcut to instantly summon the window from any app.",
+    notSet: "not set",
   },
   analytics: {
     label: "Send anonymous usage analytics",
