@@ -18,6 +18,7 @@ import { checkInstallStatus, verifyInstall, runInstall, inspectInstallTarget, va
 import { ensureLocalDashboardCompatibility, ensureSshDashboardCompatibility } from "../hermes-agent-compat";
 import { addMcpServer, installMcpCatalogEntry, listMcpCatalog, listMcpServers, removeMcpServer, setMcpServerEnabled, testMcpServer, type McpServerInput } from "../mcp-servers";
 import { runHermesAuthLogin, cancelHermesAuthLogin, detectDeviceCode } from "../hermes-auth";
+import { writeReenrollFlag } from "../companion";
 import { isRemoteMode, isRemoteOnlyMode, sendMessage, transcribeAudio, startGateway, startGatewayDetailed, stopGateway, isGatewayRunning, testRemoteConnection, restartGateway, notifyProfileSwitched, ensureSshTunnelIfNeeded, setSshRemoteApiKey, getRemoteAuthHeader, resolvePendingClarify } from "../hermes";
 import { getDashboardStatus, startDashboard, stopDashboard } from "../dashboard";
 import { startSshTunnel, ensureSshTunnel, getSshTunnelUrl, stopSshTunnel, testSshConnection, isSshTunnelActive, isSshTunnelHealthy } from "../ssh-tunnel";
@@ -310,6 +311,9 @@ export function registerIpcHandlers(context: IpcContext): void {
     );
   });
   ipcMain.handle("oauth-login-cancel", () => cancelHermesAuthLogin());
+
+  // Войти снова без рестарта: триггерим повторный enroll в companion.
+  ipcMain.handle("companion-reenroll", () => writeReenrollFlag());
 
   // Configuration (profile-aware)
   ipcMain.handle("get-locale", () => getAppLocale());
