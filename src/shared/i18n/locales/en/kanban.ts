@@ -62,6 +62,10 @@ export default {
   workspaceWorktree: "Worktree (current repo)",
   workspaceChoose: "Choose folder…",
   workspaceNoFolder: "No folder selected",
+  localFolderLabel: "Local folder on your PC (optional)",
+  localFolderPlaceholder: "e.g. Downloads/Contracts",
+  localFolderHint:
+    "Path relative to a Documents / Downloads / Desktop root. The task runs on the server, but the assistant reads and writes files in this PC folder via local tools. Keep the app running.",
   browse: "Browse…",
   triageCheckbox:
     "Park in triage (a specifier expands the spec before promoting to to-do)",
