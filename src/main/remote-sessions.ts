@@ -69,6 +69,12 @@ export function remoteRequestJson<T>(
         headers: {
           "Content-Type": "application/json",
           "X-Hermes-Session-Token": token,
+          // Гибрид-десктоп: companion agent-shim пропускает только ShimToken из
+          // Authorization: Bearer (или X-Shim-Token). Без этого заголовка шим
+          // режет /api/sessions 403 локально → пустой список. Шим затем
+          // перезапишет Authorization на свежий agent-JWT. В прямом remote/SSH
+          // дашборд использует X-Hermes-Session-Token, лишний Bearer безвреден.
+          Authorization: "Bearer " + token,
           ...(body ? { "Content-Length": Buffer.byteLength(body) } : {}),
         },
       },
