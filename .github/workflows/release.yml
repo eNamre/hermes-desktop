@@ -9,7 +9,7 @@ on:
       dry_run:
         description: "Run all build jobs but skip publish (no tag, no GitHub Release)"
         type: boolean
-        default: true
+        default: false
 
 permissions:
   contents: write
