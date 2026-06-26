@@ -85,6 +85,7 @@ const FOOTER_NAV_ITEMS: { view: View; icon: LucideIcon; labelKey: string }[] = [
 ];
 
 const SIDEBAR_COLLAPSED_KEY = "hermes.sidebar.collapsed";
+const LAST_SESSION_KEY = "hermes.lastSessionId";
 const SIDEBAR_SCROLLBAR_HIDE_MS = 700;
 
 interface LayoutProps {
@@ -240,15 +241,48 @@ function Layout({
   const handleRunLoading = useCallback((runId: string, loading: boolean) => {
     setRuns((prev) => patchRun(prev, runId, { loading }));
   }, []);
-  const handleRunSessionId = useCallback(
-    (runId: string, sessionId: string | null) => {
-      setRuns((prev) => patchRun(prev, runId, { sessionId }));
+  // Сохраняем сгенерированный заголовок сессии на сервер (иначе удалённые
+  // сессии остаются без названия), один раз на сессию.
+  const titledSessions = useRef<Set<string>>(new Set());
+  const persistSessionTitle = useCallback(
+    (sessionId: string, title: string) => {
+      const t = title.trim();
+      if (!sessionId || !t || titledSessions.current.has(sessionId)) return;
+      titledSessions.current.add(sessionId);
+      void window.hermesAPI.updateSessionTitle(sessionId, t).catch(() => {});
     },
     [],
   );
-  const handleRunTitle = useCallback((runId: string, title: string) => {
-    setRuns((prev) => patchRun(prev, runId, { title }));
-  }, []);
+  const handleRunSessionId = useCallback(
+    (runId: string, sessionId: string | null) => {
+      setRuns((prev) => {
+        const next = patchRun(prev, runId, { sessionId });
+        if (sessionId) {
+          // Запоминаем последний активный диалог, чтобы открыть его при запуске.
+          try {
+            localStorage.setItem(LAST_SESSION_KEY, sessionId);
+          } catch {
+            /* ignore persistence failures */
+          }
+          const run = next.find((r) => r.runId === runId);
+          if (run?.title) persistSessionTitle(sessionId, run.title);
+        }
+        return next;
+      });
+    },
+    [persistSessionTitle],
+  );
+  const handleRunTitle = useCallback(
+    (runId: string, title: string) => {
+      setRuns((prev) => {
+        const next = patchRun(prev, runId, { title });
+        const run = next.find((r) => r.runId === runId);
+        if (run?.sessionId) persistSessionTitle(run.sessionId, title);
+        return next;
+      });
+    },
+    [persistSessionTitle],
+  );
   const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
     try {
       return localStorage.getItem(SIDEBAR_COLLAPSED_KEY) === "true";
@@ -550,6 +584,27 @@ function Layout({
     },
     [runs, activeRunId, handleActivateRun, activeProfile, goTo],
   );
+
+  // При запуске открываем последний диалог пользователя вместо пустого чата
+  // (удалённые сессии живут на сервере; пустой run иначе их прячет). Один раз
+  // и только если стартовый run ещё чистый.
+  const didAutoResumeRef = useRef(false);
+  useEffect(() => {
+    if (didAutoResumeRef.current) return;
+    didAutoResumeRef.current = true;
+    let last: string | null = null;
+    try {
+      last = localStorage.getItem(LAST_SESSION_KEY);
+    } catch {
+      last = null;
+    }
+    if (!last) return;
+    const active = runs.find((r) => r.runId === activeRunId);
+    if (active && !active.sessionId && !active.loading && !active.title) {
+      void handleResumeSession(last);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const toggleSidebar = useCallback(() => {
     setSidebarCollapsed((collapsed) => {
