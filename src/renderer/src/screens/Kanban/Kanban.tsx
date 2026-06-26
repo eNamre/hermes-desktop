@@ -457,9 +457,7 @@ function Kanban({ profile, visible }: KanbanProps): React.JSX.Element {
   // Compact the board by dropping empty *intermediate* columns. A column is
   // shown when it has tasks, OR it is the first/last lane in the canonical
   // order (the edges always stay so the board keeps its shape). Crossed with
-  // the manual "show all columns" override. Guard: if filtering would leave
-  // fewer than 3 lanes (e.g. an empty board), fall back to showing them all so
-  // the board never looks broken or near-empty. Purely a visual list — the
+  // the manual "show all columns" override. Purely a visual list — the
   // data in `tasksByStatus` and all drag/move logic are untouched.
   const visibleColumns = useMemo(() => {
     if (showAllColumns) return renderedColumns;
@@ -468,7 +466,9 @@ function Kanban({ profile, visible }: KanbanProps): React.JSX.Element {
       if (i === 0 || i === lastIdx) return true;
       return (tasksByStatus[col.key]?.length ?? 0) > 0;
     });
-    return filtered.length < 3 ? renderedColumns : filtered;
+    // Edges always stay, so `filtered` keeps at least the first/last lanes —
+    // no <3 fallback (it made small boards show every column and broke the toggle).
+    return filtered;
   }, [renderedColumns, tasksByStatus, showAllColumns]);
 
   useEffect(() => {
