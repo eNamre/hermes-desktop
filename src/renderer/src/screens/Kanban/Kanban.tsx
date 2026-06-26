@@ -267,6 +267,9 @@ function Kanban({ profile, visible }: KanbanProps): React.JSX.Element {
   const [newPriority, setNewPriority] = useState("0");
   const [newWorkspace, setNewWorkspace] = useState("scratch");
   const [newWorkspaceDir, setNewWorkspaceDir] = useState("");
+  // REMOTE-only: агент исполняется на сервере (Linux); локальные папки ПК там
+  // недоступны → принудительно scratch и прячем worktree/«Выбрать папку».
+  const [remoteOnly, setRemoteOnly] = useState(false);
   const [newTriage, setNewTriage] = useState(false);
 
   // New board form
@@ -468,6 +471,21 @@ function Kanban({ profile, visible }: KanbanProps): React.JSX.Element {
     return filtered.length < 3 ? renderedColumns : filtered;
   }, [renderedColumns, tasksByStatus, showAllColumns]);
 
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      try {
+        const ro = await window.hermesAPI.isRemoteOnlyMode();
+        if (!cancelled) setRemoteOnly(ro);
+      } catch {
+        // По умолчанию считаем НЕ remote-only (локальные опции остаются).
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   function resetCreateForm(): void {
     setNewTitle("");
     setNewBody("");
@@ -486,7 +504,11 @@ function Kanban({ profile, visible }: KanbanProps): React.JSX.Element {
   async function handleCreate(): Promise<void> {
     if (!newTitle.trim()) return;
     let workspaceArg: string | undefined;
-    if (newWorkspace === "dir") {
+    if (remoteOnly) {
+      // В remote-only задача исполняется на сервере — всегда серверный
+      // scratch, локальные dir:/worktree не отправляем.
+      workspaceArg = "scratch";
+    } else if (newWorkspace === "dir") {
       if (!newWorkspaceDir) {
         setError(t("kanban.errPickFolder"));
         return;
@@ -1163,18 +1185,25 @@ function Kanban({ profile, visible }: KanbanProps): React.JSX.Element {
                 <select
                   className="input"
                   aria-label="Workspace"
-                  value={newWorkspace}
+                  value={remoteOnly ? "scratch" : newWorkspace}
                   onChange={(e) => setNewWorkspace(e.target.value)}
+                  disabled={remoteOnly}
                 >
                   <option value="scratch">
                     {t("kanban.workspaceScratch")}
                   </option>
-                  <option value="worktree">
-                    {t("kanban.workspaceWorktree")}
-                  </option>
-                  <option value="dir">{t("kanban.workspaceChoose")}</option>
+                  {!remoteOnly && (
+                    <>
+                      <option value="worktree">
+                        {t("kanban.workspaceWorktree")}
+                      </option>
+                      <option value="dir">
+                        {t("kanban.workspaceChoose")}
+                      </option>
+                    </>
+                  )}
                 </select>
-                {newWorkspace === "dir" && (
+                {!remoteOnly && newWorkspace === "dir" && (
                   <div className="kanban-folder-picker">
                     <input
                       className="input"

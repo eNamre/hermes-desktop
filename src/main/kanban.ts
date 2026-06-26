@@ -395,14 +395,11 @@ export async function createTask(
     return { success: false, error: "Title is required" };
   }
   if (isRemoteOnlyMode()) {
-    // workspace local-формат "scratch"|"worktree"|"dir:<path>" → дашборд ждёт
-    // workspace_kind (+ workspace_path для dir:). По умолчанию scratch.
-    let workspace_kind = input.workspace || "scratch";
-    let workspace_path: string | undefined;
-    if (workspace_kind.startsWith("dir:")) {
-      workspace_path = workspace_kind.slice(4);
-      workspace_kind = "dir";
-    }
+    // REMOTE: агент исполняется на сервере (Linux), локальные пути ПК там
+    // не существуют → "dir:<windows-путь>" уводит задачу в blocked.
+    // Поэтому в remote ПРИНУДИТЕЛЬНО используем серверный scratch и
+    // никогда не отправляем workspace_path (игнорируем dir:/worktree из UI).
+    const workspace_kind = "scratch";
     const r = await remoteKanbanPost("/tasks", {
       title: input.title,
       ...(input.body ? { body: input.body } : {}),
@@ -410,7 +407,6 @@ export async function createTask(
       ...(input.priority !== undefined ? { priority: input.priority } : {}),
       ...(input.tenant ? { tenant: input.tenant } : {}),
       workspace_kind,
-      ...(workspace_path ? { workspace_path } : {}),
       ...(input.triage ? { triage: true } : {}),
       ...(input.skills && input.skills.length ? { skills: input.skills } : {}),
       ...(input.maxRetries !== undefined
