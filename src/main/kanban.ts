@@ -245,15 +245,6 @@ async function remoteKanbanDelete(path: string) {
   return remoteKanbanReq("DELETE", path);
 }
 
-function remoteKanbanWriteBlocked<T>(): KanbanResult<T> {
-  // НЕ unsupportedMode — чтобы доска оставалась видимой (read-only), а не
-  // переключалась на экран "смени режим".
-  return {
-    success: false,
-    error: "Изменения Канбана в remote-режиме пока недоступны — только просмотр.",
-  };
-}
-
 export async function listBoards(
   includeArchived = false,
   profile?: string,
