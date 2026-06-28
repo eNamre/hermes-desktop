@@ -57,7 +57,7 @@ describe("I18nProvider", () => {
     }
   });
 
-  it("renders English translations by default", async () => {
+  it("renders Russian translations by default (RAZUM build)", async () => {
     await act(async () => {
       render(
         <I18nProvider>
@@ -67,7 +67,7 @@ describe("I18nProvider", () => {
     });
 
     expect(
-      await screen.findByText("Welcome to Hermes One"),
+      await screen.findByText("Добро пожаловать в РАЗУМ Ассистент"),
     ).toBeInTheDocument();
   });
 

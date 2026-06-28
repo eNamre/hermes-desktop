@@ -2,8 +2,8 @@ import { describe, expect, it } from "vitest";
 import { t, getLocaleDirection } from "./index";
 
 describe("shared i18n", () => {
-  it("returns English text by default", () => {
-    expect(t("welcome.title")).toBe("Welcome to Hermes One");
+  it("returns Russian text by default (RAZUM build)", () => {
+    expect(t("welcome.title")).toBe("Добро пожаловать в РАЗУМ Ассистент");
   });
 
   it("falls back to the key when an English key is missing", () => {
