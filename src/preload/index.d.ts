@@ -575,6 +575,7 @@ interface HermesAPI {
     sessionId: string,
     folder: string | null,
   ) => Promise<boolean>;
+  listRecentSessionContextFolders: (limit?: number) => Promise<string[]>;
   getSessionModelOverride: (
     sessionId: string,
   ) => Promise<SessionModelOverride | null>;
@@ -604,7 +605,7 @@ interface HermesAPI {
   >;
   createProfile: (
     name: string,
-    clone: boolean,
+    cloneFrom: string | null,
   ) => Promise<{ success: boolean; error?: string }>;
   deleteProfile: (
     name: string,

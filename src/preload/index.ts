@@ -736,6 +736,9 @@ const hermesAPI = {
   ): Promise<boolean> =>
     ipcRenderer.invoke("set-session-context-folder", sessionId, folder),
 
+  listRecentSessionContextFolders: (limit?: number): Promise<string[]> =>
+    ipcRenderer.invoke("list-recent-session-context-folders", limit),
+
   getSessionModelOverride: (
     sessionId: string,
   ): Promise<SessionModelOverride | null> =>
@@ -767,9 +770,9 @@ const hermesAPI = {
 
   createProfile: (
     name: string,
-    clone: boolean,
+    cloneFrom: string | null,
   ): Promise<{ success: boolean; error?: string }> =>
-    ipcRenderer.invoke("create-profile", name, clone),
+    ipcRenderer.invoke("create-profile", name, cloneFrom),
 
   deleteProfile: (
     name: string,
