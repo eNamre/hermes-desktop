@@ -83,6 +83,7 @@ import {
   cancelHermesAuthLogin,
   detectDeviceCode,
 } from "../hermes-auth";
+import { writeReenrollFlag } from "../companion";
 import {
   isRemoteMode,
   isRemoteOnlyMode,
