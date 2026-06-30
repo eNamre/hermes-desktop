@@ -117,4 +117,14 @@ export function setupUpdater({ getMainWindow }: UpdaterDeps): void {
   setTimeout(() => {
     autoUpdater.checkForUpdates().catch(() => {});
   }, 5000);
+
+  // Периодическая проверка обновлений во время работы (не только при старте).
+  // Раз в час; при autoDownload загрузка и уведомление идут сами, установка —
+  // по кнопке пользователя. Интервал переопределяется UPDATE_CHECK_INTERVAL_MS.
+  const hourMs = 60 * 60 * 1000;
+  const envMs = Number(process.env.UPDATE_CHECK_INTERVAL_MS);
+  const intervalMs = Number.isFinite(envMs) && envMs > 0 ? envMs : hourMs;
+  setInterval(() => {
+    autoUpdater.checkForUpdates().catch(() => {});
+  }, intervalMs);
 }
